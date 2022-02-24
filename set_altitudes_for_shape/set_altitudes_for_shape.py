@@ -59,8 +59,8 @@ class SetAltitudesForShape(QtWidgets.QDialog, Ui_Dialog):
 
         custom_altitude = self.doubleSpinBox.value()
         for shape in shapes:
-            new_vertices = [Metashape.Vector([v.x, v.y, custom_altitude]) for v in shape.vertices]
-            shape.vertices = new_vertices
+            new_vertices = [Metashape.Vector([vertice.x, vertice.y, custom_altitude]) for vertice in shape.geometry.coordinates[0]]
+            shape.geometry = Metashape.Geometry.Polygon(new_vertices)
 
         self.messageBox('Altitude has been set! Update shape layer by double-click on layer in Workspace.')
 
