@@ -72,10 +72,10 @@ class SetAltitudesForShape(QtWidgets.QDialog, Ui_Dialog):
             return
 
         for shape in shapes:
-            altitudes = [v.z for v in shape.vertices]
+            altitudes = [vertice.z for vertice in shape.geometry.coordinates[0]]
             median_alt = median(altitudes)
-            new_vertices = [Metashape.Vector([v.x, v.y, median_alt]) for v in shape.vertices]
-            shape.vertices = new_vertices
+            new_vertices = [Metashape.Vector([vertice.x, vertice.y, median_alt]) for vertice in shape.geometry.coordinates[0]]
+            shape.geometry = Metashape.Geometry.Polygon(new_vertices)
 
         if len(shapes) == 1:
             self.doubleSpinBox.setValue(round(median_alt, 2))
