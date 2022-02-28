@@ -56,19 +56,23 @@ def create_shape(vertices: list, chunk: PhotoScan.Chunk = None, label: str = "",
     shp.label = label
     if len(vertices[0]) < 3:
         if z_coord is not None:
-            shp.has_z = True
-            shp.vertices = [[pt[0], pt[1], z_coord] for pt in vertices]
+            shp_vertices = [[pt[0], pt[1], z_coord] for pt in vertices]
         else:
-            shp.has_z = False
-            shp.vertices = [[pt[0], pt[1]] for pt in vertices]
+            shp_vertices = [[pt[0], pt[1]] for pt in vertices]
     else:
-        shp.has_z = True
-        shp.vertices = [[pt[0], pt[1], pt[2]] for pt in vertices]
+        shp_vertices = [[pt[0], pt[1], pt[2]] for pt in vertices]
 
     if group is not None:
         shp.group = group
 
-    shp.type = PhotoScan.Shape.Type.values[shape_type]
+    shp_type_classes = {
+        "Point": PhotoScan.Geometry.Point,
+        "Polygon": PhotoScan.Geometry.Polygon,
+        "Polyline": PhotoScan.Geometry.LineString,
+    }
+    geometry_class = shp_type_classes[shape_type]
+    shp.geometry = geometry_class(shp_vertices)
+
     shp.boundary_type = PhotoScan.Shape.BoundaryType.values[boundary_type]
 
     return shp
