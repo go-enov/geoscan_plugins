@@ -103,8 +103,8 @@ class GridGenerator(Window):
         shape = sw.get_selected_shapes()[0]
 
         min_x, min_y, max_x, max_y = float('inf'), float('inf'), float('-inf'), float('-inf')
-        for v in shape.vertices:
-            projected_point = Metashape.CoordinateSystem.transform(v, source=chunk.shapes.crs, target=chunk.crs)
+        for vertex in shape.geometry.coordinates[0]:
+            projected_point = Metashape.CoordinateSystem.transform(vertex, source=chunk.shapes.crs, target=chunk.crs)
             min_x = projected_point.x if projected_point.x < min_x else min_x
             min_y = projected_point.y if projected_point.y < min_y else min_y
             max_x = projected_point.x if projected_point.x > max_x else max_x
