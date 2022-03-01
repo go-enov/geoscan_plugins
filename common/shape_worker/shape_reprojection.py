@@ -84,14 +84,14 @@ class ShapeGeometry:
 
     @classmethod
     def convert_to_shapely_geometry(cls, metashape_obj):
-        if metashape_obj.type == Metashape.Shape.Type.Point:
-            return Point([(v.x, v.y) for v in metashape_obj.vertices])
+        if metashape_obj.geometry.type == metashape_obj.geometry.type.PointType:
+            return Point([(v.x, v.y) for v in metashape_obj.geometry.coordinates])
 
-        elif metashape_obj.type == Metashape.Shape.Type.Polyline:
-            return LineString([(v.x, v.y) for v in metashape_obj.vertices])
+        elif metashape_obj.geometry.type == metashape_obj.geometry.type.LineStringType:
+            return LineString([(v.x, v.y) for v in metashape_obj.geometry.coordinates])
 
-        elif metashape_obj.type == Metashape.Shape.Type.Polygon:
-            return Polygon([(v.x, v.y) for v in metashape_obj.vertices])
+        elif metashape_obj.geometry.type == metashape_obj.geometry.type.PolygonType:
+            return Polygon([(v.x, v.y) for v in metashape_obj.geometry.coordinates[0]])
 
     def convert_to_metashape_geometry(self, shapely_obj):
         points = list()
