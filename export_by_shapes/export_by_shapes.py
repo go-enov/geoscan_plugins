@@ -342,7 +342,7 @@ class Exporter:
         :return: shapely.geom.Polygon() instance
         """
         temp_group = self.chunk.shapes.addGroup()
-        temp_shape = create_shape(vertices=shape.vertices, group=temp_group)
+        temp_shape = create_shape(vertices=shape.geometry.coordinates[0], group=temp_group)
 
         src_polygon = ShapeGeometry(temp_shape, self.chunk.shapes.crs.proj4)
         src_polygon.add_buffer(self.buffer)
