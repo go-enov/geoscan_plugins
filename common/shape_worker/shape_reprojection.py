@@ -170,11 +170,11 @@ def reproject_shape(shape: Metashape.Shape,
                     target_crs: Metashape.CoordinateSystem):
 
     if isinstance(shape, Metashape.Shape):
-        if shape.type == Metashape.Shape.Type.Point:
+        if shape.geometry.type == Metashape.Geometry.Type.PointType:
             shape = reproject_point(shape, source_crs, target_crs)
-        elif shape.type == Metashape.Shape.Type.Polyline:
+        elif shape.geometry.type == Metashape.Geometry.Type.LineStringType:
             shape = reproject_line(shape, source_crs, target_crs)
-        elif shape.type == Metashape.Shape.Type.Polygon:
+        elif shape.geometry.type == Metashape.Geometry.Type.PolygonType:
             shape = reproject_polygon(shape, source_crs, target_crs)
         else:
             raise NotImplementedError('Unknown type of Metashape.Shape object')
