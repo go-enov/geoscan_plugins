@@ -101,9 +101,9 @@ class ShapeGeometry:
         self.shape.vertices = points
 
     def get_average_vertice(self):
-        x = sum([v.x for v in self.shape.vertices]) / len(self.shape.vertices)
-        y = sum([v.y for v in self.shape.vertices]) / len(self.shape.vertices)
-        z = sum([v.z for v in self.shape.vertices]) / len(self.shape.vertices)
+        x = sum([v.x for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
+        y = sum([v.y for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
+        z = sum([v.z for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
         return Metashape.Vector([x, y, z])
 
 
