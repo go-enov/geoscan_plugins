@@ -313,7 +313,7 @@ class Exporter:
         :param ps_shape: Metashape.Shape() instance.
         :return: shapely.geom.Polygon
         """
-        polygon = Polygon([v for v in ps_shape.vertices])
+        polygon = Polygon([v for v in ps_shape.geometry.coordinates[0]])
         return polygon
 
     def __shapely_polygon2ps_shapes(self, shapely_polygon):
