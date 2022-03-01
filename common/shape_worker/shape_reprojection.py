@@ -234,15 +234,15 @@ def reproject_line(shape: Metashape.Shape,
 def reproject_polygon(shape: Metashape.Shape,
                       source_crs: Metashape.CoordinateSystem,
                       target_crs: Metashape.CoordinateSystem):
-    if shape.type == Metashape.Shape.Type.Polygon:
-        vertices = shape.vertices
+    if shape.geometry.type == Metashape.Geometry.Type.PolygonType:
+        vertices = shape.geometry.coordinates[0]
         transform_vertices = list()
         for vertice in vertices:
             transform_vertices.append(Metashape.CoordinateSystem.transform(vertice, source_crs, target_crs))
-        shape.vertices = transform_vertices
+        shape.geometry = Metashape.Geometry.Polygon(transform_vertices)
         return shape
     else:
-        raise TypeError('Type of shape is {}, not Metashape.Shape.Type.Polygon'.format(shape.type))
+        raise TypeError('Type of shape is {}, not Metashape.Geometry.Type.PolygonType'.format(shape.geometry.type))
 
 
 def haversine(lon1, lat1, lon2, lat2):
