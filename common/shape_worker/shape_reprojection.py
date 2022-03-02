@@ -84,26 +84,26 @@ class ShapeGeometry:
 
     @classmethod
     def convert_to_shapely_geometry(cls, metashape_obj):
-        if metashape_obj.type == Metashape.Shape.Type.Point:
-            return Point([(v.x, v.y) for v in metashape_obj.vertices])
+        if metashape_obj.geometry.type == metashape_obj.geometry.type.PointType:
+            return Point([(v.x, v.y) for v in metashape_obj.geometry.coordinates])
 
-        elif metashape_obj.type == Metashape.Shape.Type.Polyline:
-            return LineString([(v.x, v.y) for v in metashape_obj.vertices])
+        elif metashape_obj.geometry.type == metashape_obj.geometry.type.LineStringType:
+            return LineString([(v.x, v.y) for v in metashape_obj.geometry.coordinates])
 
-        elif metashape_obj.type == Metashape.Shape.Type.Polygon:
-            return Polygon([(v.x, v.y) for v in metashape_obj.vertices])
+        elif metashape_obj.geometry.type == metashape_obj.geometry.type.PolygonType:
+            return Polygon([(v.x, v.y) for v in metashape_obj.geometry.coordinates[0]])
 
     def convert_to_metashape_geometry(self, shapely_obj):
         points = list()
-        average_z = sum([v.z for v in self.shape.vertices]) / len(self.shape.vertices)
+        average_z = sum([v.z for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
         for point in list(shapely_obj.exterior.coords):
             points.append(Metashape.Vector([point[0], point[1], average_z]))
-        self.shape.vertices = points
+        self.shape.geometry = Metashape.Geometry.Polygon(points)
 
     def get_average_vertice(self):
-        x = sum([v.x for v in self.shape.vertices]) / len(self.shape.vertices)
-        y = sum([v.y for v in self.shape.vertices]) / len(self.shape.vertices)
-        z = sum([v.z for v in self.shape.vertices]) / len(self.shape.vertices)
+        x = sum([v.x for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
+        y = sum([v.y for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
+        z = sum([v.z for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
         return Metashape.Vector([x, y, z])
 
 
@@ -170,11 +170,11 @@ def reproject_shape(shape: Metashape.Shape,
                     target_crs: Metashape.CoordinateSystem):
 
     if isinstance(shape, Metashape.Shape):
-        if shape.type == Metashape.Shape.Type.Point:
+        if shape.geometry.type == Metashape.Geometry.Type.PointType:
             shape = reproject_point(shape, source_crs, target_crs)
-        elif shape.type == Metashape.Shape.Type.Polyline:
+        elif shape.geometry.type == Metashape.Geometry.Type.LineStringType:
             shape = reproject_line(shape, source_crs, target_crs)
-        elif shape.type == Metashape.Shape.Type.Polygon:
+        elif shape.geometry.type == Metashape.Geometry.Type.PolygonType:
             shape = reproject_polygon(shape, source_crs, target_crs)
         else:
             raise NotImplementedError('Unknown type of Metashape.Shape object')
@@ -234,15 +234,15 @@ def reproject_line(shape: Metashape.Shape,
 def reproject_polygon(shape: Metashape.Shape,
                       source_crs: Metashape.CoordinateSystem,
                       target_crs: Metashape.CoordinateSystem):
-    if shape.type == Metashape.Shape.Type.Polygon:
-        vertices = shape.vertices
+    if shape.geometry.type == Metashape.Geometry.Type.PolygonType:
+        vertices = shape.geometry.coordinates[0]
         transform_vertices = list()
         for vertice in vertices:
             transform_vertices.append(Metashape.CoordinateSystem.transform(vertice, source_crs, target_crs))
-        shape.vertices = transform_vertices
+        shape.geometry = Metashape.Geometry.Polygon(transform_vertices)
         return shape
     else:
-        raise TypeError('Type of shape is {}, not Metashape.Shape.Type.Polygon'.format(shape.type))
+        raise TypeError('Type of shape is {}, not Metashape.Geometry.Type.PolygonType'.format(shape.geometry.type))
 
 
 def haversine(lon1, lat1, lon2, lat2):
