@@ -95,10 +95,10 @@ class ShapeGeometry:
 
     def convert_to_metashape_geometry(self, shapely_obj):
         points = list()
-        average_z = sum([v.z for v in self.shape.vertices]) / len(self.shape.vertices)
+        average_z = sum([v.z for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
         for point in list(shapely_obj.exterior.coords):
             points.append(Metashape.Vector([point[0], point[1], average_z]))
-        self.shape.vertices = points
+        self.shape.geometry = Metashape.Geometry.Polygon(points)
 
     def get_average_vertice(self):
         x = sum([v.x for v in self.shape.geometry.coordinates[0]]) / len(self.shape.geometry.coordinates[0])
