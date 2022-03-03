@@ -180,8 +180,8 @@ def reproject_shape(shape: Metashape.Shape,
             raise NotImplementedError('Unknown type of Metashape.Shape object')
     else:
         if isinstance(shape, Point):
-            reprojected_point = Metashape.CoordinateSystem.transform(list(shape.coords), source_crs, target_crs)
-            shape = Point(reprojected_point.vertices)
+            reprojected_point = Metashape.CoordinateSystem.transform(shape.coords[0], source_crs, target_crs)
+            shape = Point(reprojected_point)
         elif isinstance(shape, LineString):
             reprojected_points = list()
             for point in shape.coords:
