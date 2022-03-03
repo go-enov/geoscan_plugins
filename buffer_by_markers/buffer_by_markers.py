@@ -157,17 +157,17 @@ class LinearBuffer:
         selected_points, selected_lines, selected_polygons, random_point = list(), list(), list(), None
         for shape in chunk.shapes:
             if shape.group.key in selected_shapegroup_keys:
-                if shape.type == Metashape.Shape.Type.Point:
-                    selected_points.append(Point(*shape.vertices))
-                elif shape.type == Metashape.Shape.Type.Polyline:
-                    selected_lines.append(LineString(shape.vertices))
-                elif shape.type == Metashape.Shape.Type.Polygon:
-                    selected_polygons.append(Polygon(shape.vertices))
+                if shape.geometry.type == Metashape.Geometry.Type.PointType:
+                    selected_points.append(Point(list(shape.geometry.coordinates[0])))
+                    random_point = Point(list(shape.geometry.coordinates[0]))
+                elif shape.geometry.type == Metashape.Geometry.Type.LineStringType:
+                    selected_lines.append(LineString(list(shape.geometry.coordinates)))
+                    random_point = Point(list(shape.geometry.coordinates[0]))
+                elif shape.geometry.type == Metashape.Geometry.Type.PolygonType:
+                    selected_polygons.append(Polygon(list(shape.geometry.coordinates[0])))
+                    random_point = Point(list(shape.geometry.coordinates[0][0]))
                 else:
                     raise NotImplementedError
-
-                if not random_point:
-                    random_point = Point(shape.vertices[0])
 
         reproject = self.get_reprojection_func(chunk=chunk, geometry=random_point, is_marker=False)
         buffered_points = [reproject(x, to_meters=True).buffer(distance=buffer_distance, cap_style=cap_style)
